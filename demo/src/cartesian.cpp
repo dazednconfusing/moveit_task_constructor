@@ -50,8 +50,8 @@ Task createTask() {
 	Task t;
 	t.stages()->setName("Cartesian Path");
 
-	const std::string group = "panda_arm";
-	const std::string eef = "hand";
+	const std::string group = "interbotix_arm";
+	const std::string eef = "interbotix_gripper";
 
 	// create Cartesian interpolation "planner" to be used in various stages
 	auto cartesian_interpolation = std::make_shared<solvers::CartesianPath>();
@@ -74,7 +74,7 @@ Task createTask() {
 		auto stage = std::make_unique<stages::MoveRelative>("x +0.2", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::Vector3Stamped direction;
-		direction.header.frame_id = "world";
+		direction.header.frame_id = "locobot/base_footprint";
 		direction.vector.x = 0.2;
 		stage->setDirection(direction);
 		t.add(std::move(stage));
@@ -84,7 +84,7 @@ Task createTask() {
 		auto stage = std::make_unique<stages::MoveRelative>("y -0.3", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::Vector3Stamped direction;
-		direction.header.frame_id = "world";
+		direction.header.frame_id = "locobot/base_footprint";
 		direction.vector.y = -0.3;
 		stage->setDirection(direction);
 		t.add(std::move(stage));
@@ -94,7 +94,7 @@ Task createTask() {
 		auto stage = std::make_unique<stages::MoveRelative>("rz +45°", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::TwistStamped twist;
-		twist.header.frame_id = "world";
+		twist.header.frame_id = "locobot/base_footprint";
 		twist.twist.angular.z = M_PI / 4.;
 		stage->setDirection(twist);
 		t.add(std::move(stage));
