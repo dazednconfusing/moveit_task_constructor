@@ -57,31 +57,51 @@ std::unique_ptr<SerialContainer> createModule(const std::string& group) {
 	auto joint_interpolation = std::make_shared<solvers::JointInterpolationPlanner>();
 
 	{
-		auto stage = std::make_unique<stages::MoveRelative>("x +0.2", cartesian);
+		auto stage = std::make_unique<stages::MoveRelative>("z -0.2", cartesian);
 		stage->properties().configureInitFrom(Stage::PARENT, { "group" });
 		geometry_msgs::Vector3Stamped direction;
 		direction.header.frame_id = "world";
-		direction.vector.x = 0.2;
+		direction.vector.z = -0.2;
 		stage->setDirection(direction);
 		c->insert(std::move(stage));
 	}
 
 	{
-		auto stage = std::make_unique<stages::MoveRelative>("y -0.3", cartesian);
+		auto stage = std::make_unique<stages::MoveRelative>("x -0.15", cartesian);
+		stage->properties().configureInitFrom(Stage::PARENT, { "group" });
+		geometry_msgs::Vector3Stamped direction;
+		direction.header.frame_id = "world";
+		direction.vector.x = -0.15;
+		stage->setDirection(direction);
+		c->insert(std::move(stage));
+	}
+
+	{
+		auto stage = std::make_unique<stages::MoveRelative>("y -0.1", cartesian);
 		stage->properties().configureInitFrom(Stage::PARENT);
 		geometry_msgs::Vector3Stamped direction;
 		direction.header.frame_id = "world";
-		direction.vector.y = -0.3;
+		direction.vector.y = -0.1;
+		stage->setDirection(direction);
+		c->insert(std::move(stage));
+	}
+
+	{
+		auto stage = std::make_unique<stages::MoveRelative>("y 0.2", cartesian);
+		stage->properties().configureInitFrom(Stage::PARENT);
+		geometry_msgs::Vector3Stamped direction;
+		direction.header.frame_id = "world";
+		direction.vector.y = 0.2;
 		stage->setDirection(direction);
 		c->insert(std::move(stage));
 	}
 
 	{  // rotate about TCP
-		auto stage = std::make_unique<stages::MoveRelative>("rz +45°", cartesian);
+		auto stage = std::make_unique<stages::MoveRelative>("rz -90°", cartesian);
 		stage->properties().configureInitFrom(Stage::PARENT);
 		geometry_msgs::TwistStamped twist;
 		twist.header.frame_id = "world";
-		twist.twist.angular.z = M_PI / 4.;
+		twist.twist.angular.z = -M_PI / 2.;
 		stage->setDirection(twist);
 		c->insert(std::move(stage));
 	}
@@ -100,7 +120,7 @@ Task createTask() {
 	t.stages()->setName("Reusable Containers");
 	t.add(std::make_unique<stages::CurrentState>("current"));
 
-	const std::string group = "panda_arm";
+	const std::string group = "interbotix_arm";
 	t.add(createModule(group));
 	t.add(createModule(group));
 	t.add(createModule(group));
@@ -121,6 +141,7 @@ int main(int argc, char** argv) {
 		if (task.plan())
 			task.introspection().publishSolution(*task.solutions().front());
 	} catch (const InitStageException& ex) {
+		ROS_ERROR("Planning Init failed");
 		std::cerr << "planning failed with exception" << std::endl << ex << task;
 	}
 

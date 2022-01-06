@@ -13,9 +13,9 @@ hand_close_pose: "Close"
 arm_home_pose: "Home"
 
 # Scene frames
-world_frame: "locobot/base_footprint"
-table_reference_frame: "locobot/base_footprint"
-object_reference_frame: "locobot/base_footprint"
+world_frame: "wprld"
+table_reference_frame: "world"
+object_reference_frame: "world"
 surface_link: "table"
 
 # Collision object for picking
@@ -31,7 +31,8 @@ table_dimensions: [0.4, 0.5, 0.1]  # [length, width, height]
 table_pose: [0.5, -0.25, 0, 0, 0, 0]
 
 # Gripper grasp frame transform [x,y,z,r,p,y]
-grasp_frame_transform: [0, 0, 0.1, 1.571, 0.785, 1.571]
+# grasp_frame_transform: [0, 0, 0.1, 1.571, 0.785, 1.571]
+grasp_frame_transform: [0.05, 0, 0, 0, 0, 0]
 
 # Place pose [x,y,z,r,p,y]
 place_pose: [0.6, -0.15, 0, 0, 0, 0]

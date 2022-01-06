@@ -63,7 +63,7 @@ Task createTask() {
 	auto scene = std::make_shared<planning_scene::PlanningScene>(t.getRobotModel());
 	{
 		auto& state = scene->getCurrentStateNonConst();
-		state.setToDefaultValues(state.getJointModelGroup(group), "ready");
+		state.setToDefaultValues(state.getJointModelGroup(group), "Home");
 
 		auto fixed = std::make_unique<stages::FixedState>("initial state");
 		fixed->setState(scene);
@@ -71,21 +71,41 @@ Task createTask() {
 	}
 
 	{
-		auto stage = std::make_unique<stages::MoveRelative>("x +0.2", cartesian_interpolation);
+		auto stage = std::make_unique<stages::MoveRelative>("z -0.2", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::Vector3Stamped direction;
-		direction.header.frame_id = "locobot/base_footprint";
-		direction.vector.x = 0.2;
+		direction.header.frame_id = "world";
+		direction.vector.z = -0.2;
 		stage->setDirection(direction);
 		t.add(std::move(stage));
 	}
 
 	{
-		auto stage = std::make_unique<stages::MoveRelative>("y -0.3", cartesian_interpolation);
+		auto stage = std::make_unique<stages::MoveRelative>("x +0.1", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::Vector3Stamped direction;
-		direction.header.frame_id = "locobot/base_footprint";
-		direction.vector.y = -0.3;
+		direction.header.frame_id = "world";
+		direction.vector.x = 0.1;
+		stage->setDirection(direction);
+		t.add(std::move(stage));
+	}
+
+	{
+		auto stage = std::make_unique<stages::MoveRelative>("x -0.2", cartesian_interpolation);
+		stage->setGroup(group);
+		geometry_msgs::Vector3Stamped direction;
+		direction.header.frame_id = "world";
+		direction.vector.x = -0.2;
+		stage->setDirection(direction);
+		t.add(std::move(stage));
+	}
+
+	{
+		auto stage = std::make_unique<stages::MoveRelative>("y -0.1", cartesian_interpolation);
+		stage->setGroup(group);
+		geometry_msgs::Vector3Stamped direction;
+		direction.header.frame_id = "world";
+		direction.vector.y = -0.1;
 		stage->setDirection(direction);
 		t.add(std::move(stage));
 	}
@@ -94,24 +114,33 @@ Task createTask() {
 		auto stage = std::make_unique<stages::MoveRelative>("rz +45°", cartesian_interpolation);
 		stage->setGroup(group);
 		geometry_msgs::TwistStamped twist;
-		twist.header.frame_id = "locobot/base_footprint";
+		twist.header.frame_id = "world";
 		twist.twist.angular.z = M_PI / 4.;
 		stage->setDirection(twist);
 		t.add(std::move(stage));
 	}
 
-	{  // perform a Cartesian motion, defined as a relative offset in joint space
-		auto stage = std::make_unique<stages::MoveRelative>("joint offset", cartesian_interpolation);
-		stage->setGroup(group);
-		std::map<std::string, double> offsets = { { "panda_joint1", M_PI / 6. }, { "panda_joint3", -M_PI / 6 } };
-		stage->setDirection(offsets);
-		t.add(std::move(stage));
-	}
+	// {  // rotate about TCP
+	// 	auto stage = std::make_unique<stages::MoveRelative>("rz +45°", cartesian_interpolation);
+	// 	stage->setGroup(group);
+	// 	geometry_msgs::TwistStamped twist;
+	// 	twist.header.frame_id = "world";
+	// 	twist.twist.angular.z = M_PI / 4.;
+	// 	stage->setDirection(twist);
+	// 	t.add(std::move(stage));
+	// }
+	// {  // perform a Cartesian motion, defined as a relative offset in joint space
+	// 	auto stage = std::make_unique<stages::MoveRelative>("joint offset", cartesian_interpolation);
+	// 	stage->setGroup(group);
+	// 	std::map<std::string, double> offsets = { { "panda_joint1", M_PI / 6. }, { "panda_joint3", -M_PI / 6 } };
+	// 	stage->setDirection(offsets);
+	// 	t.add(std::move(stage));
+	// }
 
 	{  // move gripper into predefined open state
 		auto stage = std::make_unique<stages::MoveTo>("open gripper", joint_interpolation);
 		stage->setGroup(eef);
-		stage->setGoal("open");
+		stage->setGoal("Open");
 		t.add(std::move(stage));
 	}
 
@@ -142,9 +171,10 @@ int main(int argc, char** argv) {
 		if (task.plan())
 			task.introspection().publishSolution(*task.solutions().front());
 	} catch (const InitStageException& ex) {
+		ROS_ERROR("Planning Init failed");
 		std::cerr << "planning failed with exception" << std::endl << ex << task;
 	}
-
+	ROS_INFO("Planning Init SUCCESS");
 	ros::waitForShutdown();  // keep alive for interactive inspection in rviz
 	return 0;
 }

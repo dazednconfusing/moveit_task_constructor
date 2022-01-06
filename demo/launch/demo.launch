@@ -5,7 +5,9 @@
     <arg name="use_fake" value="true"/>
       <arg name="use_moveit_rviz" value="false"/>
   </include>
-  <param name="locobot/move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+  <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+
+  <!-- <param name="locobot/move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" /> -->
 
   <!-- Run rviz with prepared config -->
    <include  file="$(find interbotix_xslocobot_moveit)/launch/moveit_rviz.launch">
