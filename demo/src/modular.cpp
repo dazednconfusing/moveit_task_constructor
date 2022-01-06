@@ -77,6 +77,16 @@ std::unique_ptr<SerialContainer> createModule(const std::string& group) {
 	}
 
 	{
+		auto stage = std::make_unique<stages::MoveRelative>("x +0.15", cartesian);
+		stage->properties().configureInitFrom(Stage::PARENT, { "group" });
+		geometry_msgs::Vector3Stamped direction;
+		direction.header.frame_id = "world";
+		direction.vector.x = 0.15;
+		stage->setDirection(direction);
+		c->insert(std::move(stage));
+	}
+
+	{
 		auto stage = std::make_unique<stages::MoveRelative>("y -0.1", cartesian);
 		stage->properties().configureInitFrom(Stage::PARENT);
 		geometry_msgs::Vector3Stamped direction;
@@ -97,19 +107,19 @@ std::unique_ptr<SerialContainer> createModule(const std::string& group) {
 	}
 
 	{  // rotate about TCP
-		auto stage = std::make_unique<stages::MoveRelative>("rz -90°", cartesian);
+		auto stage = std::make_unique<stages::MoveRelative>("rz +45°", cartesian);
 		stage->properties().configureInitFrom(Stage::PARENT);
 		geometry_msgs::TwistStamped twist;
 		twist.header.frame_id = "world";
-		twist.twist.angular.z = -M_PI / 2.;
+		twist.twist.angular.z = M_PI / 4.;
 		stage->setDirection(twist);
 		c->insert(std::move(stage));
 	}
 
 	{  // move back to ready pose
-		auto stage = std::make_unique<stages::MoveTo>("moveTo ready", joint_interpolation);
+		auto stage = std::make_unique<stages::MoveTo>("moveTo Home", joint_interpolation);
 		stage->properties().configureInitFrom(Stage::PARENT);
-		stage->setGoal("ready");
+		stage->setGoal("Home");
 		c->insert(std::move(stage));
 	}
 	return c;
