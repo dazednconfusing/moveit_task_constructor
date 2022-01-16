@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <launch>
+ <arg name="use_gazebo" default="false" />
+ <arg name="use_fake" value="false" if="$(arg use_gazebo)"/>
+  <arg name="use_fake" value="true" unless="$(arg use_gazebo)"/>
   <!-- Load panda demo with MTC's execution capability -->
   <include file="$(find interbotix_xslocobot_moveit)/launch/xslocobot_moveit.launch">
-    <arg name="use_fake" value="true"/>
-      <arg name="use_moveit_rviz" value="false"/>
+    <arg name="use_gazebo" value="$(arg use_gazebo)"/>
+    <arg name="use_fake" value="$(arg use_fake)"/>
+    <arg name="use_moveit_rviz" value="false"/>
   </include>
   <param name="move_group/capabilities" value="move_group/ExecuteTaskSolutionCapability" />
 
