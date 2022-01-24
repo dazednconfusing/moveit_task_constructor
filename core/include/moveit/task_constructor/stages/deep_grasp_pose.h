@@ -42,6 +42,7 @@
 #include <moveit/task_constructor/marker_tools.h>
 #include <rviz_marker_tools/marker_creation.h>
 #include <moveit/planning_scene/planning_scene.h>
+#include <moveit_visual_tools/moveit_visual_tools.h>
 
 // #include <memory>
 #include <functional>
@@ -112,6 +113,8 @@ private:
 	bool found_candidates_;
 	std::vector<geometry_msgs::PoseStamped> grasp_candidates_;
 	std::vector<double> costs_;
+	// For visualizing things in rviz
+	moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 };
 
 template <class ActionSpec>
@@ -127,6 +130,7 @@ DeepGraspPose<ActionSpec>::DeepGraspPose(const std::string& action_name, const s
 	ROS_INFO_NAMED(LOGNAME, "Waiting for connection to grasp generation action server...");
 	ActionBaseT::clientPtr_->waitForServer(ros::Duration(ActionBaseT::server_timeout_));
 	ROS_INFO_NAMED(LOGNAME, "Connected to server");
+	visual_tools_.reset(new moveit_visual_tools::MoveItVisualTools("world", "/move_group/display_grasp_markers"));
 }
 
 template <class ActionSpec>
@@ -265,9 +269,12 @@ void DeepGraspPose<ActionSpec>::compute() {
 
 			// add frame at target pose
 			rviz_marker_tools::appendFrame(trajectory.markers(), grasp_candidates_.at(i), 0.1, "grasp frame");
+			visual_tools_->publishAxis(grasp_candidates_.at(i).pose);
+			// visual_tools.trigger();
 
 			spawn(std::move(state), std::move(trajectory));
 		}
+		visual_tools_->trigger();
 	}
 }
 
