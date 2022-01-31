@@ -441,7 +441,7 @@ Visualization Manager:
       State Display Time: 0.05 s
       Task Solution Topic: /mtc_tutorial/solution
       Tasks:
-        deep_pick_place_task: 0
+        {}
       Trail Step Size: 1
       Value: true
     - Class: rviz/Image
@@ -544,6 +544,7 @@ Visualization Manager:
       Hide Inactive Objects: true
     - Class: rviz/MoveCamera
     - Class: rviz/Select
+    - Class: rviz/Measure
   Value: true
   Views:
     Current:
@@ -564,9 +565,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7197970747947693
+      Pitch: 0.16479729115962982
       Target Frame: world
-      Yaw: 2.066772699356079
+      Yaw: 4.616804122924805
     Saved: ~
 Window Geometry:
   Depth Image:
