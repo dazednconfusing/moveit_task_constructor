@@ -329,6 +329,7 @@ void ComputeIK::compute() {
 		solution.markAsFailure();
 		// TODO: visualize collisions
 		solution.setComment(s.comment() + " eef in collision: " + listCollisionPairs(collisions.contacts, ", "));
+		ROS_WARN_STREAM_NAMED("ComputeIK", name() + ": eef in collision: " + listCollisionPairs(collisions.contacts, ", "));
 		auto colliding_scene{ scene->diff() };
 		colliding_scene->setCurrentState(sandbox_state);
 		spawn(InterfaceState(colliding_scene), std::move(solution));
