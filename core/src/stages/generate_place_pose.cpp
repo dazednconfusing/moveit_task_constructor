@@ -56,6 +56,8 @@ GeneratePlacePose::GeneratePlacePose(const std::string& name) : GeneratePose(nam
 	p.declare<std::string>("object");
 	p.declare<geometry_msgs::PoseStamped>("ik_frame");
 	p.declare<bool>("allow_z_flip", false, "allow placing objects upside down");
+	// visual_tools_.reset(new moveit_visual_tools::MoveItVisualTools("world", "/move_group/display_grasp_markers"));
+
 }
 
 void GeneratePlacePose::onNewSolution(const SolutionBase& s) {
@@ -133,10 +135,15 @@ void GeneratePlacePose::compute() {
 				SubTrajectory trajectory;
 				trajectory.setCost(0.0);
 				rviz_marker_tools::appendFrame(trajectory.markers(), target_pose_msg, 0.1, "place frame");
+				ROS_ERROR_STREAM(" place pose: " << target_pose_msg.pose.position.x << "," << target_pose_msg.pose.position.y << "," << target_pose_msg.pose.position.z);
+				// visual_tools_->publishAxis(target_pose_msg.pose);
+
+
 
 				spawn(std::move(state), std::move(trajectory));
 			}
 		}
+		// visual_tools_->trigger();
 	};
 
 	uint z_flips = props.get<bool>("allow_z_flip") ? 1 : 0;
