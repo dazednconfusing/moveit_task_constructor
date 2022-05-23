@@ -135,7 +135,7 @@ void GeneratePlacePose::compute() {
 				SubTrajectory trajectory;
 				trajectory.setCost(0.0);
 				rviz_marker_tools::appendFrame(trajectory.markers(), target_pose_msg, 0.1, "place frame");
-				ROS_ERROR_STREAM(" place pose: " << target_pose_msg.pose.position.x << "," << target_pose_msg.pose.position.y << "," << target_pose_msg.pose.position.z);
+				// ROS_ERROR_STREAM(" place pose: " << target_pose_msg.pose.position.x << "," << target_pose_msg.pose.position.y << "," << target_pose_msg.pose.position.z);
 				// visual_tools_->publishAxis(target_pose_msg.pose);
 
 
