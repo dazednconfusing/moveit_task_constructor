@@ -439,9 +439,9 @@ Visualization Manager:
         Voxel Rendering: Occupied Voxels
       Show Trail: false
       State Display Time: 0.05 s
-      Task Solution Topic: /mtc_tutorial/solution
+      Task Solution Topic: /mtc_task/solution
       Tasks:
-        deep_pick_place_task: 0
+        {}
       Trail Step Size: 1
       Value: true
     - Class: rviz/Image
