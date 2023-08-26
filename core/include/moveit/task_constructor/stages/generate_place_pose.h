@@ -39,6 +39,7 @@
 #pragma once
 
 #include <moveit/task_constructor/stages/generate_pose.h>
+#include <moveit_visual_tools/moveit_visual_tools.h>
 
 namespace moveit {
 namespace task_constructor {
@@ -59,6 +60,10 @@ public:
 
 protected:
 	void onNewSolution(const SolutionBase& s) override;
+
+private:
+	// For visualizing things in rviz
+	moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 };
 }  // namespace stages
 }  // namespace task_constructor

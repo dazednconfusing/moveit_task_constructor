@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	visualization_msgs
 	rviz_marker_tools
+	moveit_visual_tools
+	
 )
 
 catkin_package(
@@ -27,6 +29,8 @@ catkin_package(
 		moveit_task_constructor_msgs
 		rviz_marker_tools
 		visualization_msgs
+		rviz_marker_tools # << Added this
+		moveit_visual_tools
 )
 
 set(CMAKE_CXX_STANDARD 14)

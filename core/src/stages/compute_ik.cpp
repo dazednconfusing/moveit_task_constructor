@@ -277,7 +277,7 @@ void ComputeIK::compute() {
 	if (value.empty()) {  // property undefined
 		//  determine IK link from eef/group
 		if (!(link = eef_jmg ? robot_model->getLinkModel(eef_jmg->getEndEffectorParentGroup().second) :
-		                       jmg->getOnlyOneEndEffectorTip())) {
+                             jmg->getOnlyOneEndEffectorTip())) {
 			ROS_WARN_STREAM_NAMED("ComputeIK", "Failed to derive IK target link");
 			return;
 		}
@@ -329,6 +329,7 @@ void ComputeIK::compute() {
 		solution.markAsFailure();
 		// TODO: visualize collisions
 		solution.setComment(s.comment() + " eef in collision: " + listCollisionPairs(collisions.contacts, ", "));
+		ROS_WARN_STREAM_NAMED("ComputeIK", name() + ": collision: " + listCollisionPairs(collisions.contacts, ", "));
 		auto colliding_scene{ scene->diff() };
 		colliding_scene->setCurrentState(sandbox_state);
 		spawn(InterfaceState(colliding_scene), std::move(solution));
